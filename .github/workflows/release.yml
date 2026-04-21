@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
 
       - name: Generate release notes
-        uses: orhun/git-cliff-action@v4
+        uses: orhun/git-cliff-action@c93ef52f3d0ddcdcc9bd5447d98d458a11cd4f72 # v4
         env:
           OUTPUT: RELEASE_NOTES.md
         with:
