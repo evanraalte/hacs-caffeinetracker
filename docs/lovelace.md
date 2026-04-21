@@ -98,6 +98,10 @@ chips:
     entity: sensor.erik_sleep_safe_at
     icon: mdi:sleep
     icon_color: blue
+  - type: entity
+    entity: sensor.erik_estimated_peak_level
+    icon: mdi:trending-up
+    icon_color: purple
 ```
 
 ---
@@ -265,6 +269,10 @@ cards:
         entity: sensor.erik_sleep_safe_at
         icon: mdi:sleep
         icon_color: blue
+      - type: entity
+        entity: sensor.erik_estimated_peak_level
+        icon: mdi:trending-up
+        icon_color: purple
 
   - type: grid
     columns: 3
