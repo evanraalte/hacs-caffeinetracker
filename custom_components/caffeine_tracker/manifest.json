@@ -1,11 +1,13 @@
 {
   "domain": "caffeine_tracker",
   "name": "Caffeine Tracker",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "config_flow": true,
   "documentation": "https://github.com/evanraalte/ha-caffeine-tracker",
   "issue_tracker": "https://github.com/evanraalte/ha-caffeine-tracker/issues",
-  "codeowners": ["@evanraalte"],
+  "codeowners": [
+    "@evanraalte"
+  ],
   "iot_class": "calculated",
   "integration_type": "service",
   "requirements": []
