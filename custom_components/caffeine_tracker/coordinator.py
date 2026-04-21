@@ -106,7 +106,10 @@ def compute_peak_mg(
     peak = compute_current_mg(events, half_life_hours, now, absorption_time_min)
     for minutes in range(1, 181):
         level = compute_current_mg(
-            events, half_life_hours, now + timedelta(minutes=minutes), absorption_time_min
+            events,
+            half_life_hours,
+            now + timedelta(minutes=minutes),
+            absorption_time_min,
         )
         if level > peak:
             peak = level

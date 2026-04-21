@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 DOMAIN = "caffeine_tracker"
 STORAGE_VERSION = 1
 STORAGE_KEY_PREFIX = "caffeine_tracker"

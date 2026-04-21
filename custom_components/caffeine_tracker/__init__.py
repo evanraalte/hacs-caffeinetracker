@@ -62,7 +62,9 @@ async def async_setup(hass: HomeAssistant, config: dict) -> bool:
                     if ts and ts.tzinfo is None:
                         ts = dt_util.as_utc(ts)
 
-                await coordinator.async_log_consumption(mg=mg, label=label, timestamp=ts)
+                await coordinator.async_log_consumption(
+                    mg=mg, label=label, timestamp=ts
+                )
 
             elif call.service == SERVICE_REMOVE_LAST:
                 await coordinator.async_remove_last()
