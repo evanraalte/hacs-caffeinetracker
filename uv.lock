@@ -10,7 +10,7 @@ resolution-markers = [
 ]
 
 [options]
-exclude-newer = "2026-04-14T09:27:15.428415Z"
+exclude-newer = "2026-04-14T09:33:53.387084Z"
 exclude-newer-span = "P7D"
 
 [[package]]
@@ -2244,7 +2244,7 @@ requires-dist = [
 dev = [
     { name = "pyright", specifier = ">=1.1" },
     { name = "pytest", specifier = ">=8.3" },
-    { name = "pytest-asyncio", specifier = ">=0.24" },
+    { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "pytest-cov", specifier = ">=5.0" },
     { name = "pytest-homeassistant-custom-component", specifier = ">=0.13" },
     { name = "pytest-sugar" },
