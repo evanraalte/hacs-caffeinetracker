@@ -36,7 +36,7 @@ jobs:
       - name: Pin HA version
         if: matrix.ha-version != 'stable'
         run: |
-          uv add --group dev "homeassistant==${{ matrix.ha-version }}"
+          uv add "homeassistant==${{ matrix.ha-version }}"
       - run: uv sync --group dev
       - run: uv run pytest --cov=custom_components/caffeine_tracker --cov-report=xml
       - uses: codecov/codecov-action@v4
