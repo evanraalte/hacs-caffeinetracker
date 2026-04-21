@@ -140,4 +140,5 @@ tasks:
       - git add custom_components/caffeine_tracker/manifest.json pyproject.toml
       - 'git commit -m "chore: release $(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")"'
       - 'git tag v$(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")'
-      - echo "Release created locally. Run 'git push origin main --tags' to trigger the GitHub Release."
+      - git push origin main --tags
+      - echo "Release created and pushed to GitHub."
