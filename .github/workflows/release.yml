@@ -19,7 +19,7 @@ jobs:
       - name: Build zip asset
         run: |
           cd custom_components
-          zip -r ../caffeine_tracker.zip caffeine_tracker
+          zip -r ../caffeine_tracker.zip caffeine_tracker -x "**/__pycache__/*"
           cd ..
 
       - name: Create Release
