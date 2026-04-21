@@ -40,6 +40,74 @@ PLATFORMS = [Platform.SENSOR]
 
 async def async_setup(hass: HomeAssistant, config: dict) -> bool:
     """Set up the Caffeine Tracker integration."""
+
+    async def handle_service(call: ServiceCall) -> None:
+        """Handle the service call."""
+        # This helper extracts unique config entry IDs from the target (entities or devices).
+        # By iterating over entry IDs, we ensure the action fires exactly once per profile.
+        entry_ids = await service.async_extract_config_entry_ids(call)
+
+        for entry_id in entry_ids:
+            if entry_id not in hass.data.get(DOMAIN, {}):
+                continue
+            coordinator: CaffeineCoordinator = hass.data[DOMAIN][entry_id]
+
+            if call.service == SERVICE_LOG_CONSUMPTION:
+                mg = call.data[ATTR_MG]
+                label = call.data.get(ATTR_LABEL, "custom")
+                timestamp_str = call.data.get(ATTR_TIMESTAMP)
+                ts = None
+                if timestamp_str:
+                    ts = dt_util.parse_datetime(timestamp_str)
+                    if ts and ts.tzinfo is None:
+                        ts = dt_util.as_utc(ts)
+
+                await coordinator.async_log_consumption(mg=mg, label=label, timestamp=ts)
+
+            elif call.service == SERVICE_REMOVE_LAST:
+                await coordinator.async_remove_last()
+
+            elif call.service == SERVICE_REMOVE_BY_ID:
+                await coordinator.async_remove_by_id(call.data[ATTR_EVENT_ID])
+
+            elif call.service == SERVICE_CLEAR_TODAY:
+                await coordinator.async_clear_today()
+
+    # Register domain-level services once at setup.
+    # make_entity_service_schema adds standard target fields (entity_id, device_id, etc.)
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_LOG_CONSUMPTION,
+        handle_service,
+        schema=cv.make_entity_service_schema(
+            {
+                vol.Required(ATTR_MG): vol.All(
+                    vol.Coerce(float), vol.Range(min=1, max=2000)
+                ),
+                vol.Optional(ATTR_LABEL): cv.string,
+                vol.Optional(ATTR_TIMESTAMP): cv.string,
+            }
+        ),
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_REMOVE_LAST,
+        handle_service,
+        schema=cv.make_entity_service_schema({}),
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_REMOVE_BY_ID,
+        handle_service,
+        schema=cv.make_entity_service_schema({vol.Required(ATTR_EVENT_ID): cv.string}),
+    )
+    hass.services.async_register(
+        DOMAIN,
+        SERVICE_CLEAR_TODAY,
+        handle_service,
+        schema=cv.make_entity_service_schema({}),
+    )
+
     return True
 
 
@@ -73,89 +141,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-    # Register services (overwrites existing handlers if already present).
-    # This ensures reloads pick up the latest domain-level logic.
-    await _async_setup_services(hass)
-
     # Reload entry when options change so coordinator picks up new settings.
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))
 
     return True
-
-
-async def _async_setup_services(hass: HomeAssistant) -> None:
-    """Set up domain-level services."""
-
-    async def handle_service(call: ServiceCall) -> None:
-        """Handle the service call."""
-        # Use a set to ensure unique entry IDs even if multiple entities are targeted
-        entry_ids = await service.async_extract_config_entry_ids(call)
-        
-        _LOGGER.debug(
-            "Service %s called with entries: %s (context: %s)",
-            call.service,
-            entry_ids,
-            call.context.id,
-        )
-
-        for entry_id in entry_ids:
-            if entry_id not in hass.data.get(DOMAIN, {}):
-                continue
-            coordinator: CaffeineCoordinator = hass.data[DOMAIN][entry_id]
-
-            if call.service == SERVICE_LOG_CONSUMPTION:
-                mg = call.data[ATTR_MG]
-                label = call.data.get(ATTR_LABEL, "custom")
-                timestamp_str = call.data.get(ATTR_TIMESTAMP)
-                ts = None
-                if timestamp_str:
-                    ts = dt_util.parse_datetime(timestamp_str)
-                    if ts and ts.tzinfo is None:
-                        ts = dt_util.as_utc(ts)
-
-                await coordinator.async_log_consumption(mg=mg, label=label, timestamp=ts)
-
-            elif call.service == SERVICE_REMOVE_LAST:
-                await coordinator.async_remove_last()
-
-            elif call.service == SERVICE_REMOVE_BY_ID:
-                await coordinator.async_remove_by_id(call.data[ATTR_EVENT_ID])
-
-            elif call.service == SERVICE_CLEAR_TODAY:
-                await coordinator.async_clear_today()
-
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_LOG_CONSUMPTION,
-        handle_service,
-        schema=cv.make_entity_service_schema(
-            {
-                vol.Required(ATTR_MG): vol.All(
-                    vol.Coerce(float), vol.Range(min=1, max=2000)
-                ),
-                vol.Optional(ATTR_LABEL): cv.string,
-                vol.Optional(ATTR_TIMESTAMP): cv.string,
-            }
-        ),
-    )
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_REMOVE_LAST,
-        handle_service,
-        schema=cv.make_entity_service_schema({}),
-    )
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_REMOVE_BY_ID,
-        handle_service,
-        schema=cv.make_entity_service_schema({vol.Required(ATTR_EVENT_ID): cv.string}),
-    )
-    hass.services.async_register(
-        DOMAIN,
-        SERVICE_CLEAR_TODAY,
-        handle_service,
-        schema=cv.make_entity_service_schema({}),
-    )
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

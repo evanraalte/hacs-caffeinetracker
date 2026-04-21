@@ -19,7 +19,6 @@ import homeassistant.util.dt as dt_util
 
 from .const import (
     ATTR_EVENTS,
-    CaffeineEntityFeature,
     DOMAIN,
 )
 from .coordinator import CaffeineCoordinator
@@ -69,7 +68,6 @@ class CaffeineCurrentSensor(_CaffeineBase):
     _attr_icon = "mdi:coffee"
     _attr_suggested_display_precision = 0
     _attr_translation_key = "current"
-    _attr_supported_features = CaffeineEntityFeature.LOG_SERVICES
 
     def __init__(self, coordinator: CaffeineCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator, entry)

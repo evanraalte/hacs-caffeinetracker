@@ -2,13 +2,6 @@
 
 from __future__ import annotations
 
-from enum import IntFlag
-
-
-class CaffeineEntityFeature(IntFlag):
-    """Feature flags — only the primary sensor (Caffeine Level) sets these."""
-
-    LOG_SERVICES = 1
 
 DOMAIN = "caffeine_tracker"
 STORAGE_VERSION = 1
