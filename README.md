@@ -93,6 +93,26 @@ task install
 task test
 ```
 
+### Commit conventions
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/). Commit messages drive the changelog and version bumps via [git-cliff](https://git-cliff.org/).
+
+| Prefix | When to use | Changelog section |
+|--------|-------------|-------------------|
+| `feat:` | New user-facing feature | Features |
+| `fix:` | Bug fix | Bug Fixes |
+| `docs:` | Documentation only | Documentation |
+| `perf:` | Performance improvement | Performance |
+| `refactor:` | Code change with no behaviour change | Refactoring |
+| `test:` | Adding or fixing tests | Testing |
+| `chore(deps):` | Dependency updates | Dependencies |
+| `chore:` | Everything else (skipped in changelog) | — |
+| `ci:` | CI/CD changes (skipped in changelog) | — |
+
+Add `!` after the prefix (e.g. `feat!:`) or a `BREAKING CHANGE:` footer for breaking changes.
+
+To cut a release: `task release VERSION=x.y.z`
+
 ## License
 
 MIT - See [LICENSE](LICENSE) for details.

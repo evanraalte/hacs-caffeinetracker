@@ -26,3 +26,20 @@
 - `test_sensor.py` covers integration tests, service calls, and device targeting.
 - `test_coordinator.py` covers pure logic and computation.
 - Use `uv run pytest` to execute.
+
+## Commit conventions
+Always use [Conventional Commits](https://www.conventionalcommits.org/). Commit type determines changelog inclusion and version bumps.
+
+| Prefix | Use for | In changelog |
+|--------|---------|--------------|
+| `feat:` | New user-facing feature | Yes — Features |
+| `fix:` | Bug fix | Yes — Bug Fixes |
+| `docs:` | Documentation only | Yes — Documentation |
+| `perf:` | Performance improvement | Yes — Performance |
+| `refactor:` | Internal refactor, no behaviour change | Yes — Refactoring |
+| `test:` | Adding or updating tests | Yes — Testing |
+| `chore(deps):` | Dependency updates | Yes — Dependencies |
+| `chore:` | Maintenance, tooling, config | No |
+| `ci:` | CI/CD pipeline changes | No |
+
+Use `feat!:` or a `BREAKING CHANGE:` footer for breaking changes. Never use generic messages like "update", "fix stuff", or "WIP".
