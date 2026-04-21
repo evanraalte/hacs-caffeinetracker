@@ -3,8 +3,8 @@
   "name": "Caffeine Tracker",
   "version": "0.1.1",
   "config_flow": true,
-  "documentation": "https://github.com/evanraalte/ha-caffeine-tracker",
-  "issue_tracker": "https://github.com/evanraalte/ha-caffeine-tracker/issues",
+  "documentation": "https://github.com/evanraalte/hacs-caffeinetracker",
+  "issue_tracker": "https://github.com/evanraalte/hacs-caffeinetracker/issues",
   "codeowners": [
     "@evanraalte"
   ],

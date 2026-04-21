@@ -1,5 +1,5 @@
 [project]
-name = "ha-caffeine-tracker"
+name = "hacs-caffeinetracker"
 version = "0.1.1"
 description = "Home Assistant caffeine tracker integration"
 authors = [{ name = "evanraalte" }]

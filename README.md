@@ -1,12 +1,12 @@
 # Caffeine Tracker for Home Assistant
 
-[![GitHub Release](https://img.shields.io/github/release/evanraalte/ha-caffeine-tracker.svg?style=flat-square)](https://github.com/evanraalte/ha-caffeine-tracker/releases)
-[![License](https://img.shields.io/github/license/evanraalte/ha-caffeine-tracker.svg?style=flat-square)](LICENSE)
+[![GitHub Release](https://img.shields.io/github/release/evanraalte/hacs-caffeinetracker.svg?style=flat-square)](https://github.com/evanraalte/hacs-caffeinetracker/releases)
+[![License](https://img.shields.io/github/license/evanraalte/hacs-caffeinetracker.svg?style=flat-square)](LICENSE)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg?style=flat-square)](https://github.com/hacs/integration)
 
 A Home Assistant integration that tracks your caffeine levels using a science-based exponential decay model. It calculates current mg in your body, total daily intake, and estimates when it's safe to sleep.
 
-![Caffeine Dashboard Example](https://raw.githubusercontent.com/evanraalte/ha-caffeine-tracker/main/docs/dashboard_preview.png)
+![Caffeine Dashboard Example](https://raw.githubusercontent.com/evanraalte/hacs-caffeinetracker/main/docs/dashboard_preview.png)
 
 ## Features
 
@@ -23,7 +23,7 @@ A Home Assistant integration that tracks your caffeine levels using a science-ba
 
 1. Open **HACS** in Home Assistant.
 2. Click the three dots in the top right and select **Custom repositories**.
-3. Add `https://github.com/evanraalte/ha-caffeine-tracker` as an **Integration**.
+3. Add `https://github.com/evanraalte/hacs-caffeinetracker` as an **Integration**.
 4. Click **Install**.
 5. Restart Home Assistant.
 
@@ -87,8 +87,8 @@ Check the [Lovelace Guide](docs/lovelace.md) for mini-graph and Mushroom card ex
 This project uses `uv` for dependency management and `Taskfile` for automation.
 
 ```bash
-git clone https://github.com/evanraalte/ha-caffeine-tracker
-cd ha-caffeine-tracker
+git clone https://github.com/evanraalte/hacs-caffeinetracker
+cd hacs-caffeinetracker
 task install
 task test
 ```
