@@ -1,9 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    ":pinDigests",
-    "helpers:pinGitHubActionDigests",
+    "config:best-practices",
     ":semanticCommits"
   ],
   "homeassistant-manifest": {
@@ -19,6 +17,7 @@
     {
       "description": "Group all GitHub Actions updates",
       "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["minor", "patch"],
       "groupName": "github actions"
     },
     {
@@ -28,5 +27,9 @@
       "platformAutomerge": true
     }
   ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "automerge": true
+  },
   "timezone": "UTC"
 }
