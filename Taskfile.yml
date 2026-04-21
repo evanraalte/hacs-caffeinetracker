@@ -130,6 +130,7 @@ tasks:
         "
       - git cliff --tag v{{.VERSION}} --output CHANGELOG.md
       - git add pyproject.toml custom_components/caffeine_tracker/manifest.json CHANGELOG.md
-      - git commit -m "chore: release v{{.VERSION}}"
+      - 'git commit -m "chore: release v{{.VERSION}}"'
       - git tag v{{.VERSION}}
-      - echo "Release v{{.VERSION}} ready — push with: git push && git push --tags"
+      - git push
+      - git push --tags
