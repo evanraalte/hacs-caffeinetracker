@@ -1,0 +1,32 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":pinDigests",
+    "helpers:pinGitHubActionDigests",
+    ":semanticCommits"
+  ],
+  "homeassistant-manifest": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "Group all non-major HA manifest updates",
+      "matchManagers": ["homeassistant-manifest"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "manifest dependencies"
+    },
+    {
+      "description": "Group all GitHub Actions updates",
+      "matchManagers": ["github-actions"],
+      "groupName": "github actions"
+    },
+    {
+      "description": "Automerge patch updates if tests pass",
+      "matchUpdateTypes": ["patch", "pin", "digest"],
+      "automerge": true,
+      "platformAutomerge": true
+    }
+  ],
+  "timezone": "UTC"
+}
