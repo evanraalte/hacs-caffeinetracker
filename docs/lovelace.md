@@ -91,6 +91,10 @@ chips:
     icon: mdi:coffee-maker
     icon_color: brown
   - type: entity
+    entity: sensor.erik_consumptions_today
+    icon: mdi:counter
+    icon_color: blue
+  - type: entity
     entity: sensor.erik_sleep_safe_at
     icon: mdi:sleep
     icon_color: blue
@@ -103,8 +107,7 @@ chips:
 A 3-column grid of mushroom template cards. Tap to log, long-press Undo to
 avoid accidental clears.
 
-Replace `sensor.erik_caffeine_level` with your own entity and adjust `mg`
-values to match your actual drinks.
+Targeting the **device** (e.g. `d380...`) or the **caffeine level sensor** works equally well with the new domain-service implementation.
 
 ```yaml
 type: grid
@@ -120,7 +123,8 @@ cards:
       action: call-service
       service: caffeine_tracker.log_consumption
       target:
-        entity_id: sensor.erik_caffeine_level
+        # Preferred: target the device
+        device_id: d380a0425d60622775a99c2954309348
       service_data:
         mg: 80
         label: Espresso
@@ -254,6 +258,10 @@ cards:
         icon: mdi:coffee-maker
         icon_color: brown
       - type: entity
+        entity: sensor.erik_consumptions_today
+        icon: mdi:counter
+        icon_color: blue
+      - type: entity
         entity: sensor.erik_sleep_safe_at
         icon: mdi:sleep
         icon_color: blue
@@ -271,7 +279,7 @@ cards:
           action: call-service
           service: caffeine_tracker.log_consumption
           target:
-            entity_id: sensor.erik_caffeine_level
+            device_id: d380a0425d60622775a99c2954309348
           service_data:
             mg: 80
             label: Espresso

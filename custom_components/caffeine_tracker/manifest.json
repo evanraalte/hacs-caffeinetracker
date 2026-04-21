@@ -3,9 +3,9 @@
   "name": "Caffeine Tracker",
   "version": "0.1.0",
   "config_flow": true,
-  "documentation": "https://github.com/erikvanraalte/ha-caffeine-tracker",
-  "issue_tracker": "https://github.com/erikvanraalte/ha-caffeine-tracker/issues",
-  "codeowners": ["@erikvanraalte"],
+  "documentation": "https://github.com/evanraalte/ha-caffeine-tracker",
+  "issue_tracker": "https://github.com/evanraalte/ha-caffeine-tracker/issues",
+  "codeowners": ["@evanraalte"],
   "iot_class": "calculated",
   "integration_type": "service",
   "requirements": []

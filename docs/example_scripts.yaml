@@ -6,6 +6,7 @@
 #   Settings -> Automations & Scenes -> Scripts -> + Add Script -> Create from YAML
 #
 # Replace "erik" with your own sensor name if you used a different profile name.
+# Better: Target the DEVICE_ID to ensure it works even if you rename sensors.
 # The mg values below are typical amounts — adjust to match your actual drinks.
 
 caffeine_espresso_erik:
@@ -14,7 +15,8 @@ caffeine_espresso_erik:
   sequence:
     - action: caffeine_tracker.log_consumption
       target:
-        entity_id: sensor.erik_caffeine_level
+        # Preferred: Target the device to ensure the profile is updated exactly once
+        device_id: d380a0425d60622775a99c2954309348
       data:
         mg: 80
         label: Espresso

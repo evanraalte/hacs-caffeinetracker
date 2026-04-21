@@ -2,10 +2,11 @@
 
 ## Build & Test
 - **Install**: `task install` (uses `uv`)
-- **Test**: `task test`
+- **Test**: `task test` (runs all 34 tests)
 - **Lint/Format**: `task lint`, `task format`
 - **Deploy**: `task deploy` (rsync to HA)
 - **Reload**: `task reload` (HA API call)
+- **Restart**: `task restart` (Full HA restart via API)
 
 ## Architecture
 - **`coordinator.py`**: Heart of the integration. Pure computation functions for decay/absorption logic + HA DataUpdateCoordinator.
@@ -16,11 +17,12 @@
 
 ## Service Handling
 - Services are registered at the **domain level**.
-- They use `service.async_extract_config_entry_ids(call)` to ensure a single call per target device/profile.
+- They use `service.async_extract_config_entry_ids(call)` (non-deprecated) to ensure a single call per target device/profile.
 - Supported services: `log_consumption`, `remove_last_consumption`, `remove_consumption`, `clear_today`.
+- **Targeting**: Target the **Device** for reliable once-per-profile logging.
 
 ## Testing
 - Tests are in `tests/`.
-- `test_sensor.py` covers integration tests and service calls.
+- `test_sensor.py` covers integration tests, service calls, and device targeting.
 - `test_coordinator.py` covers pure logic and computation.
 - Use `uv run pytest` to execute.
