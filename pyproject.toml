@@ -1,6 +1,6 @@
 [project]
 name = "hacs-caffeinetracker"
-version = "0.1.2"
+version = "0.1.3"
 description = "Home Assistant caffeine tracker integration"
 authors = [{ name = "evanraalte" }]
 readme = "README.md"
