@@ -88,6 +88,16 @@ tasks:
           -d '{"entity_id": "sensor.erik_caffeine_level"}' \
           http://{{.HA_HOST}}:8123/api/services/homeassistant/reload_config_entry
 
+  restart:
+    desc: Restart Home Assistant via REST API (reads HA_TOKEN from .env.local)
+    cmds:
+      - |
+        echo "Requesting Home Assistant restart..."
+        curl -s -w "\nHTTP %{http_code}\n" -X POST \
+          -H "Authorization: Bearer ${HA_TOKEN:?HA_TOKEN not set - add it to .env.local}" \
+          -H "Content-Type: application/json" \
+          http://{{.HA_HOST}}:8123/api/services/homeassistant/restart
+
   clean:
     desc: Remove generated artifacts
     cmds:
