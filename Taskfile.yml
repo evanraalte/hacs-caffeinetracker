@@ -103,3 +103,41 @@ tasks:
     cmds:
       - rm -rf .venv .pytest_cache .ruff_cache htmlcov .coverage
       - find . -type d -name __pycache__ -exec rm -rf {} +
+
+  release:
+    desc: Create a new release (usage: task release TYPE=patch|minor|major)
+    vars:
+      TYPE: '{{.TYPE | default "patch"}}'
+    cmds:
+      - |
+        uv run python3 -c '
+        import json, sys, re
+        from pathlib import Path
+
+        def bump(v, t):
+            parts = [int(x) for x in v.split(".")]
+            if t == "major": parts[0] += 1; parts[1] = 0; parts[2] = 0
+            elif t == "minor": parts[1] += 1; parts[2] = 0
+            else: parts[2] += 1
+            return ".".join(str(x) for x in parts)
+
+        # Update manifest.json
+        manifest_path = Path("custom_components/caffeine_tracker/manifest.json")
+        manifest = json.loads(manifest_path.read_text())
+        old_v = manifest["version"]
+        new_v = bump(old_v, "{{.TYPE}}")
+        manifest["version"] = new_v
+        manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
+
+        # Update pyproject.toml
+        pyproject_path = Path("pyproject.toml")
+        pyproject = pyproject_path.read_text()
+        pyproject = re.sub(r"version = \".*?\"", f"version = \"{new_v}\"", pyproject, count=1)
+        pyproject_path.write_text(pyproject)
+
+        print(f"Bumped {old_v} -> {new_v}")
+        '
+      - git add custom_components/caffeine_tracker/manifest.json pyproject.toml
+      - 'git commit -m "chore: release $(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")"'
+      - 'git tag v$(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")'
+      - echo "Release created locally. Run 'git push origin main --tags' to trigger the GitHub Release."
