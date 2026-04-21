@@ -138,7 +138,9 @@ tasks:
         print(f"Bumped {old_v} -> {new_v}")
         '
       - git add custom_components/caffeine_tracker/manifest.json pyproject.toml
-      - 'git commit -m "chore: release $(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")"'
-      - 'git tag v$(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")'
+      - |
+        VERSION=$(uv run python3 -c "import json; print(json.load(open(\"custom_components/caffeine_tracker/manifest.json\"))[\"version\"])")
+        git commit -m "chore: release $VERSION"
+        git tag "v$VERSION"
       - git push origin main --tags
       - echo "Release created and pushed to GitHub."
