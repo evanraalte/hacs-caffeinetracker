@@ -55,6 +55,9 @@
       "consumed_today": {
         "name": "Caffeine Consumed Today"
       },
+      "consumed_today_count": {
+        "name": "Consumptions Today"
+      },
       "sleep_safe_at": {
         "name": "Sleep Safe At"
       },

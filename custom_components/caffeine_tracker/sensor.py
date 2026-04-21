@@ -34,6 +34,7 @@ async def async_setup_entry(
     entities: list[_CaffeineBase] = [
         CaffeineCurrentSensor(coordinator, entry),
         CaffeineConsumedTodaySensor(coordinator, entry),
+        CaffeineConsumedTodayCountSensor(coordinator, entry),
         CaffeineSleepSafeAtSensor(coordinator, entry),
     ]
     if coordinator.enable_absorption:
@@ -111,6 +112,26 @@ class CaffeineConsumedTodaySensor(_CaffeineBase):
     def native_value(self) -> float | None:
         return (
             self.coordinator.data.consumed_today_mg if self.coordinator.data else None
+        )
+
+
+class CaffeineConsumedTodayCountSensor(_CaffeineBase):
+    """Number of caffeine events since local midnight."""
+
+    _attr_state_class = SensorStateClass.TOTAL_INCREASING
+    _attr_icon = "mdi:counter"
+    _attr_translation_key = "consumed_today_count"
+
+    def __init__(self, coordinator: CaffeineCoordinator, entry: ConfigEntry) -> None:
+        super().__init__(coordinator, entry)
+        self._attr_unique_id = f"{entry.entry_id}_consumed_today_count"
+
+    @property
+    def native_value(self) -> int | None:
+        return (
+            self.coordinator.data.consumed_today_count
+            if self.coordinator.data
+            else None
         )
 
 

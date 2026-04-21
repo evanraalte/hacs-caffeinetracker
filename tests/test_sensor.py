@@ -51,10 +51,12 @@ async def test_sensors_created(
 
     level = hass.states.get("sensor.erik_caffeine_level")
     today = hass.states.get("sensor.erik_caffeine_consumed_today")
+    count = hass.states.get("sensor.erik_consumptions_today")
     safe = hass.states.get("sensor.erik_sleep_safe_at")
 
     assert level is not None
     assert today is not None
+    assert count is not None
     assert safe is not None
 
 
@@ -67,6 +69,36 @@ async def test_initial_sensor_values_are_zero(
 
     assert float(hass.states.get("sensor.erik_caffeine_level").state) == 0.0
     assert float(hass.states.get("sensor.erik_caffeine_consumed_today").state) == 0.0
+    assert int(hass.states.get("sensor.erik_consumptions_today").state) == 0
+
+
+async def test_consumption_count(
+    hass: HomeAssistant, entry: MockConfigEntry, mock_store
+) -> None:
+    """Test that consumption count increments correctly."""
+    entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    # Log 2 events
+    await hass.services.async_call(
+        DOMAIN,
+        "log_consumption",
+        {"mg": 80.0, "label": "espresso"},
+        target={"entity_id": "sensor.erik_caffeine_level"},
+        blocking=True,
+    )
+    await hass.services.async_call(
+        DOMAIN,
+        "log_consumption",
+        {"mg": 40.0, "label": "tea"},
+        target={"entity_id": "sensor.erik_caffeine_level"},
+        blocking=True,
+    )
+    await hass.async_block_till_done()
+
+    count = int(hass.states.get("sensor.erik_consumptions_today").state)
+    assert count == 2
 
 
 async def test_log_consumption_service(

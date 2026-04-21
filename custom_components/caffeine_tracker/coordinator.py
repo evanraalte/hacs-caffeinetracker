@@ -61,6 +61,7 @@ class CaffeineEvent:
 class CaffeineData:
     current_mg: float
     consumed_today_mg: float
+    consumed_today_count: int
     # None = already below threshold (safe now)
     sleep_safe_at: datetime | None
     # Only set when absorption model is enabled
@@ -134,6 +135,13 @@ def compute_consumed_today_mg(
     return sum(e.mg for e in events if e.timestamp >= midnight_utc)
 
 
+def compute_consumed_today_count(
+    events: list[CaffeineEvent], midnight_utc: datetime
+) -> int:
+    """Number of caffeine events since local midnight (expressed as UTC)."""
+    return sum(1 for e in events if e.timestamp >= midnight_utc)
+
+
 def local_midnight_utc(now_utc: datetime) -> datetime:
     """Return today's local midnight as a UTC datetime."""
     local_now = dt_util.as_local(now_utc)
@@ -202,7 +210,9 @@ class CaffeineCoordinator(DataUpdateCoordinator[CaffeineData]):
         now = dt_util.utcnow()
         abs_min = self.absorption_time_min if self.enable_absorption else 0.0
         current = compute_current_mg(self._events, self.half_life_hours, now, abs_min)
-        today = compute_consumed_today_mg(self._events, local_midnight_utc(now))
+        midnight = local_midnight_utc(now)
+        today_mg = compute_consumed_today_mg(self._events, midnight)
+        today_count = compute_consumed_today_count(self._events, midnight)
 
         if self.enable_absorption:
             peak = compute_peak_mg(
@@ -220,7 +230,8 @@ class CaffeineCoordinator(DataUpdateCoordinator[CaffeineData]):
 
         return CaffeineData(
             current_mg=round(current, 1),
-            consumed_today_mg=round(today, 1),
+            consumed_today_mg=round(today_mg, 1),
+            consumed_today_count=today_count,
             sleep_safe_at=safe_at,
             peak_mg=round(peak, 1) if peak is not None else None,
             events=list(self._events),
