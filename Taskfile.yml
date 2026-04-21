@@ -105,8 +105,31 @@ tasks:
       - find . -type d -name __pycache__ -exec rm -rf {} +
 
   release:
-    desc: Instructions for releasing
+    desc: "Cut a release: bumps versions, updates CHANGELOG, commits, tags (usage: task release VERSION=0.2.0)"
+    vars:
+      VERSION: '{{.VERSION | default ""}}'
+    preconditions:
+      - sh: '[ -n "{{.VERSION}}" ]'
+        msg: "VERSION is required — usage: task release VERSION=0.2.0"
+      - sh: 'git diff --quiet && git diff --staged --quiet'
+        msg: "Working tree must be clean before releasing"
+      - sh: 'command -v git-cliff'
+        msg: "git-cliff not found — install it: brew install git-cliff"
     cmds:
-      - echo "Releases are now managed by GitHub Actions (release-please)."
-      - echo "To trigger a new release, ensure your commit messages follow Conventional Commits (e.g., 'feat: ...', 'fix: ...')."
-      - echo "A 'Release PR' will be automatically opened. Merging it will create the release and tag."
+      - python3 -c "
+          import re, pathlib;
+          p = pathlib.Path('pyproject.toml');
+          p.write_text(re.sub(r'(?m)^version = \".*\"', 'version = \"{{.VERSION}}\"', p.read_text()))
+        "
+      - python3 -c "
+          import json, pathlib;
+          p = pathlib.Path('custom_components/caffeine_tracker/manifest.json');
+          d = json.loads(p.read_text());
+          d['version'] = '{{.VERSION}}';
+          p.write_text(json.dumps(d, indent=2) + '\n')
+        "
+      - git cliff --tag v{{.VERSION}} --output CHANGELOG.md
+      - git add pyproject.toml custom_components/caffeine_tracker/manifest.json CHANGELOG.md
+      - git commit -m "chore: release v{{.VERSION}}"
+      - git tag v{{.VERSION}}
+      - echo "Release v{{.VERSION}} ready — push with: git push && git push --tags"

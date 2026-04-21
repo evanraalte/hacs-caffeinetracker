@@ -2,41 +2,37 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - 'v*'
 
 jobs:
-  release-please:
+  release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: write
-    outputs:
-      release_created: ${{ steps.release.outputs.release_created }}
-      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: google-github-actions/release-please-action@e4dc86ba9405554aeba3c6bb2d169500e7d3b4ee # v4
-        id: release
+      - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
-  upload-assets:
-    needs: release-please
-    if: ${{ needs.release-please.outputs.release_created }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        env:
+          OUTPUT: RELEASE_NOTES.md
+        with:
+          config: cliff.toml
+          args: --latest --strip header
 
-      - name: Build zip asset
+      - name: Build zip
         run: |
           cd custom_components
           zip -r ../caffeine_tracker.zip caffeine_tracker -x "**/__pycache__/*"
-          cd ..
 
-      - name: Upload Release Asset
+      - name: Create GitHub release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ needs.release-please.outputs.tag_name }} caffeine_tracker.zip
+          gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --notes-file RELEASE_NOTES.md \
+            caffeine_tracker.zip
