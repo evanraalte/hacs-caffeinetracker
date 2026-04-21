@@ -6,7 +6,7 @@
 
 A Home Assistant integration that tracks your caffeine levels using a science-based exponential decay model. It calculates current mg in your body, total daily intake, and estimates when it's safe to sleep.
 
-![Caffeine Dashboard Example](https://raw.githubusercontent.com/evanraalte/hacs-caffeinetracker/main/docs/dashboard_preview.png)
+![Caffeine Dashboard Example](docs/dashboard.png)
 
 ## Features
 
