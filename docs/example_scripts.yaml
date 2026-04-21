@@ -1,0 +1,83 @@
+# Caffeine Tracker — example HA scripts
+#
+# Add to configuration.yaml:
+#   script: !include scripts.yaml
+# or paste individual scripts via:
+#   Settings -> Automations & Scenes -> Scripts -> + Add Script -> Create from YAML
+#
+# Replace "erik" with your own sensor name if you used a different profile name.
+# The mg values below are typical amounts — adjust to match your actual drinks.
+
+caffeine_espresso_erik:
+  alias: "Espresso - Erik"
+  icon: mdi:coffee
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 80
+        label: Espresso
+
+caffeine_drip_coffee_erik:
+  alias: "Filter coffee - Erik"
+  icon: mdi:coffee-maker
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 95
+        label: Filter coffee
+
+caffeine_cappuccino_erik:
+  alias: "Cappuccino - Erik"
+  icon: mdi:coffee
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 80
+        label: Cappuccino
+
+caffeine_latte_erik:
+  alias: "Latte - Erik"
+  icon: mdi:coffee
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 75
+        label: Latte
+
+caffeine_cold_brew_erik:
+  alias: "Cold brew - Erik"
+  icon: mdi:cup
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 155
+        label: Cold brew
+
+caffeine_energy_drink_erik:
+  alias: "Energy drink - Erik"
+  icon: mdi:lightning-bolt
+  sequence:
+    - action: caffeine_tracker.log_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level
+      data:
+        mg: 160
+        label: Energy drink
+
+caffeine_undo_erik:
+  alias: "Undo last - Erik"
+  icon: mdi:undo
+  sequence:
+    - action: caffeine_tracker.remove_last_consumption
+      target:
+        entity_id: sensor.erik_caffeine_level

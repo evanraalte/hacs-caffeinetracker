@@ -1,0 +1,73 @@
+log_consumption:
+  name: Log Consumption
+  description: >
+    Record a caffeine intake for a person. Target either the device or
+    one of its sensors.
+  target:
+    device:
+      integration: caffeine_tracker
+    entity:
+      integration: caffeine_tracker
+  fields:
+    mg:
+      name: Amount (mg)
+      description: Caffeine amount in mg.
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 2000
+          step: 1
+          unit_of_measurement: mg
+    label:
+      name: Label
+      description: >
+        Optional display name for this event (e.g. "Espresso", "Cold brew").
+        Defaults to "custom".
+      required: false
+      selector:
+        text:
+    timestamp:
+      name: Timestamp
+      description: >
+        Optional ISO 8601 datetime. Defaults to now.
+        Example: "2024-06-01T08:30:00+02:00"
+      required: false
+      selector:
+        text:
+
+remove_last_consumption:
+  name: Remove Last Consumption
+  description: Undo the most recent caffeine event for this person.
+  target:
+    device:
+      integration: caffeine_tracker
+    entity:
+      integration: caffeine_tracker
+
+remove_consumption:
+  name: Remove Consumption by ID
+  description: Remove a specific caffeine event by its ID.
+  target:
+    device:
+      integration: caffeine_tracker
+    entity:
+      integration: caffeine_tracker
+  fields:
+    event_id:
+      name: Event ID
+      description: >
+        The UUID of the event to remove. IDs are listed in the
+        `events` attribute of the caffeine-level sensor.
+      required: true
+      selector:
+        text:
+
+clear_today:
+  name: Clear Today
+  description: Remove all caffeine events logged since local midnight.
+  target:
+    device:
+      integration: caffeine_tracker
+    entity:
+      integration: caffeine_tracker

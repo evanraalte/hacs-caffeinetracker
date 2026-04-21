@@ -1,0 +1,90 @@
+"""Integration tests for the config flow."""
+
+from __future__ import annotations
+
+from unittest.mock import AsyncMock, patch
+
+from homeassistant import config_entries
+from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import FlowResultType
+import pytest
+
+from custom_components.caffeine_tracker.const import (
+    CONF_HALF_LIFE_HOURS,
+    CONF_PERSON_NAME,
+    CONF_SLEEP_SAFE_MG,
+    DOMAIN,
+)
+
+
+@pytest.fixture(autouse=True)
+def bypass_setup():
+    """Skip actual integration setup — we only test the flow here."""
+    with patch(
+        "custom_components.caffeine_tracker.async_setup_entry",
+        return_value=True,
+    ):
+        yield
+
+
+async def test_user_step_creates_entry(hass: HomeAssistant) -> None:
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    assert result["type"] == FlowResultType.FORM
+    assert result["step_id"] == "user"
+
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {
+            CONF_PERSON_NAME: "Erik",
+            CONF_HALF_LIFE_HOURS: 5.0,
+            CONF_SLEEP_SAFE_MG: 50.0,
+        },
+    )
+    assert result["type"] == FlowResultType.CREATE_ENTRY
+    assert result["title"] == "Erik"
+    assert result["data"][CONF_PERSON_NAME] == "Erik"
+    assert result["data"][CONF_HALF_LIFE_HOURS] == 5.0
+    assert result["data"][CONF_SLEEP_SAFE_MG] == 50.0
+
+
+async def test_duplicate_name_shows_error(hass: HomeAssistant) -> None:
+    # Create first entry
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    await hass.config_entries.flow.async_configure(
+        result["flow_id"],
+        {CONF_PERSON_NAME: "Erik", CONF_HALF_LIFE_HOURS: 5.0, CONF_SLEEP_SAFE_MG: 50.0},
+    )
+
+    # Attempt duplicate
+    result2 = await hass.config_entries.flow.async_init(
+        DOMAIN, context={"source": config_entries.SOURCE_USER}
+    )
+    result2 = await hass.config_entries.flow.async_configure(
+        result2["flow_id"],
+        {CONF_PERSON_NAME: "erik", CONF_HALF_LIFE_HOURS: 5.0, CONF_SLEEP_SAFE_MG: 50.0},
+    )
+    assert result2["type"] == FlowResultType.FORM
+    assert result2["errors"]["base"] == "name_taken"
+
+
+async def test_multiple_persons_allowed(hass: HomeAssistant) -> None:
+    for name in ("Erik", "Girlfriend"):
+        result = await hass.config_entries.flow.async_init(
+            DOMAIN, context={"source": config_entries.SOURCE_USER}
+        )
+        result = await hass.config_entries.flow.async_configure(
+            result["flow_id"],
+            {
+                CONF_PERSON_NAME: name,
+                CONF_HALF_LIFE_HOURS: 5.0,
+                CONF_SLEEP_SAFE_MG: 50.0,
+            },
+        )
+        assert result["type"] == FlowResultType.CREATE_ENTRY
+
+    entries = hass.config_entries.async_entries(DOMAIN)
+    assert len(entries) == 2

@@ -1,0 +1,95 @@
+version: "3"
+
+# Auto-load .env.local if it exists (gitignored, for personal server config).
+# Create it with:
+#   HA_HOST=192.168.1.100
+#   HA_USER=youruser
+#   HA_CONFIG_PATH=/path/to/ha/config
+#   HA_TOKEN=your-long-lived-token
+dotenv: [".env.local"]
+
+vars:
+  HA_HOST: '{{.HA_HOST | default "homeassistant.local"}}'
+  HA_USER: '{{.HA_USER | default "root"}}'
+  HA_CONFIG_PATH: '{{.HA_CONFIG_PATH | default "/config"}}'
+  COMPONENT: custom_components/caffeine_tracker
+
+tasks:
+  install:
+    desc: Install all dev dependencies via uv
+    cmds:
+      - uv sync --group dev
+
+  test:
+    desc: Run test suite
+    cmds:
+      - uv run pytest {{.CLI_ARGS}}
+
+  test:cov:
+    desc: Run tests with coverage report
+    cmds:
+      - uv run pytest --cov=custom_components/caffeine_tracker --cov-report=term-missing --cov-report=html {{.CLI_ARGS}}
+
+  test:unit:
+    desc: Run only pure-unit tests (no HA mock needed)
+    cmds:
+      - uv run pytest tests/test_coordinator.py -v {{.CLI_ARGS}}
+
+  lint:
+    desc: Run ruff linter
+    cmds:
+      - uv run ruff check custom_components tests
+
+  format:
+    desc: Format code with ruff
+    cmds:
+      - uv run ruff format custom_components tests
+
+  fix:
+    desc: Auto-fix linting issues and format
+    cmds:
+      - uv run ruff check --fix custom_components tests
+      - uv run ruff format custom_components tests
+
+  typecheck:
+    desc: Run pyright type checker
+    cmds:
+      - uv run pyright custom_components
+
+  check:
+    desc: Run all checks (lint + typecheck + tests)
+    cmds:
+      - task: lint
+      - task: typecheck
+      - task: test
+
+  deploy:
+    desc: Rsync component to HA over SSH (reads .env.local)
+    vars:
+      DEST: "{{.HA_USER}}@{{.HA_HOST}}:{{.HA_CONFIG_PATH}}/custom_components/caffeine_tracker/"
+    cmds:
+      - rsync -av --delete --checksum {{.COMPONENT}}/ {{.DEST}}
+      - echo "Deployed - reload in HA UI or run task reload"
+
+  deploy:watch:
+    desc: Watch for file changes and auto-deploy on save (requires brew install fswatch)
+    cmds:
+      - |
+        echo "Watching {{.COMPONENT}}/ - syncing on every save. Ctrl-C to stop."
+        fswatch -o {{.COMPONENT}}/ | xargs -n1 -I{} sh -c 'echo "change detected, deploying..." && task deploy'
+
+  reload:
+    desc: Reload the integration via HA REST API (reads HA_TOKEN from .env.local)
+    cmds:
+      - |
+        curl -s -w "\nHTTP %{http_code}\n" -X POST \
+          -H "Authorization: Bearer ${HA_TOKEN:?HA_TOKEN not set - add it to .env.local}" \
+          -H "Content-Type: application/json" \
+          -d '{"entity_id": "sensor.erik_caffeine_level"}' \
+          http://{{.HA_HOST}}:8123/api/services/homeassistant/reload_config_entry
+
+  clean:
+    desc: Remove generated artifacts
+    cmds:
+      - rm -rf .venv .pytest_cache .ruff_cache htmlcov .coverage
+      - find . -type d -name __pycache__ -exec rm -rf {} +

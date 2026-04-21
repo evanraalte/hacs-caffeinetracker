@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: Lint & type check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - run: uv sync --group dev
+      - run: uv run ruff check custom_components tests
+      - run: uv run ruff format --check custom_components tests
+      - run: uv run pyright custom_components
+
+  test:
+    name: Test (HA ${{ matrix.ha-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ha-version:
+          - "2024.6.0"
+          - "stable"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+        with:
+          python-version: "3.12"
+      - name: Pin HA version
+        if: matrix.ha-version != 'stable'
+        run: |
+          uv add --group dev "homeassistant==${{ matrix.ha-version }}"
+      - run: uv sync --group dev
+      - run: uv run pytest --cov=custom_components/caffeine_tracker --cov-report=xml
+      - uses: codecov/codecov-action@v4
+        if: matrix.ha-version == 'stable'
+        with:
+          files: ./coverage.xml

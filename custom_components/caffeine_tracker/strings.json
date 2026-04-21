@@ -1,0 +1,74 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add Person",
+        "description": "Set up caffeine tracking for a household member.",
+        "data": {
+          "person_name": "Name",
+          "half_life_hours": "Caffeine half-life",
+          "sleep_safe_mg": "Sleep-safe threshold",
+          "enable_absorption": "Model gradual absorption",
+          "absorption_time_min": "Absorption time constant"
+        },
+        "data_description": {
+          "person_name": "A display name for this person (e.g. Erik, Girlfriend).",
+          "half_life_hours": "How long (hours) it takes for caffeine to halve in your body. Typical range: 3–7 h. Default 5 h.",
+          "sleep_safe_mg": "Caffeine level (mg) at which you consider it safe to sleep. Default 50 mg.",
+          "enable_absorption": "When enabled, caffeine is absorbed gradually instead of instantly. Adds an Estimated Peak Level sensor.",
+          "absorption_time_min": "Exponential absorption time constant (minutes). Default 15 min → peak ~45–55 min after intake."
+        }
+      }
+    },
+    "error": {
+      "name_taken": "A profile with this name already exists.",
+      "unknown": "An unexpected error occurred."
+    },
+    "abort": {
+      "already_configured": "Already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Update Settings",
+        "data": {
+          "half_life_hours": "Caffeine half-life",
+          "sleep_safe_mg": "Sleep-safe threshold",
+          "enable_absorption": "Model gradual absorption",
+          "absorption_time_min": "Absorption time constant"
+        },
+        "data_description": {
+          "half_life_hours": "How long (hours) it takes for caffeine to halve in your body.",
+          "sleep_safe_mg": "Caffeine level (mg) at which you consider it safe to sleep.",
+          "enable_absorption": "When enabled, caffeine is absorbed gradually instead of instantly. Adds an Estimated Peak Level sensor.",
+          "absorption_time_min": "Exponential absorption time constant (minutes). Default 15 min → peak ~45–55 min after intake."
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "current": {
+        "name": "Caffeine Level"
+      },
+      "consumed_today": {
+        "name": "Caffeine Consumed Today"
+      },
+      "sleep_safe_at": {
+        "name": "Sleep Safe At"
+      },
+      "peak": {
+        "name": "Estimated Peak Level"
+      }
+    }
+  },
+  "exceptions": {
+    "invalid_timestamp": {
+      "message": "Invalid timestamp. Use ISO 8601 format, e.g. 2024-06-01T08:30:00+02:00."
+    },
+    "event_not_found": {
+      "message": "No event with the given ID was found."
+    }
+  }
+}
