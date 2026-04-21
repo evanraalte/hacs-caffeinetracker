@@ -105,7 +105,7 @@ tasks:
       - find . -type d -name __pycache__ -exec rm -rf {} +
 
   release:
-    desc: Create a new release (usage: task release TYPE=patch|minor|major)
+    desc: "Create a new release (usage: task release TYPE=patch|minor|major)"
     vars:
       TYPE: '{{.TYPE | default "patch"}}'
     cmds:
