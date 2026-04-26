@@ -1,10 +1,10 @@
 log_consumption:
   name: Log Consumption
   description: >
-    Record a caffeine intake for a person. Target either the device or
+    Record a caffeine intake for a person. Target the device or
     one of its sensors.
   target:
-    device:
+    entity:
       integration: caffeine_tracker
   fields:
     mg:
@@ -38,14 +38,14 @@ remove_last_consumption:
   name: Remove Last Consumption
   description: Undo the most recent caffeine event for this person.
   target:
-    device:
+    entity:
       integration: caffeine_tracker
 
 remove_consumption:
   name: Remove Consumption by ID
   description: Remove a specific caffeine event by its ID.
   target:
-    device:
+    entity:
       integration: caffeine_tracker
   fields:
     event_id:
@@ -61,5 +61,5 @@ clear_today:
   name: Clear Today
   description: Remove all caffeine events logged since local midnight.
   target:
-    device:
+    entity:
       integration: caffeine_tracker
