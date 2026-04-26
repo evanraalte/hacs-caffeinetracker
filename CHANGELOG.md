@@ -1,6 +1,19 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
+## [0.2.1] - 2026-04-26
+
+### Dependencies
+
+- **deps**: Update codecov/codecov-action action to v6
+- **deps**: Update astral-sh/setup-uv action to v8
+- **deps**: Update actions/checkout action to v6
+- **deps**: Pin orhun/git-cliff-action action to f50e115
+
+### Documentation
+
+- Add conventional commit conventions to README, CLAUDE.md, and GEMINI.md
+
 ## [0.2.0] - 2026-04-21
 
 ### Bug Fixes
