@@ -6,8 +6,6 @@ log_consumption:
   target:
     device:
       integration: caffeine_tracker
-    entity:
-      integration: caffeine_tracker
   fields:
     mg:
       name: Amount (mg)
@@ -42,16 +40,12 @@ remove_last_consumption:
   target:
     device:
       integration: caffeine_tracker
-    entity:
-      integration: caffeine_tracker
 
 remove_consumption:
   name: Remove Consumption by ID
   description: Remove a specific caffeine event by its ID.
   target:
     device:
-      integration: caffeine_tracker
-    entity:
       integration: caffeine_tracker
   fields:
     event_id:
@@ -68,6 +62,4 @@ clear_today:
   description: Remove all caffeine events logged since local midnight.
   target:
     device:
-      integration: caffeine_tracker
-    entity:
       integration: caffeine_tracker
